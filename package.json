@@ -1,0 +1,14 @@
+{
+  "author": "Sebastien Barrau",
+  "name": "AquaPi",
+  "description": "An Aquarium monitor",
+  "version": "0.0.1",
+  "repository": "https://bitbucket.org/3sparks/AquaPi",
+  "dependencies": {
+    "colors": "*",
+    "express": "latest",
+    "johnny-five": "latest",
+    "mongoose": "^3.8.14",
+    "socket.io": "latest"
+  }
+}
