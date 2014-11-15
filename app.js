@@ -6,27 +6,12 @@ var express = require('express'),
     mongoose = require('mongoose'),
     connectCounter = "0";
 
-
-
 server.listen(3000);
 
-
-// // Database stuff
-// mongoose.connect('mongodb://foostable:republica@ds059908.mongolab.com:59908/foosball');
-// var db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function callback () {
-//   console.log('Yay connected to DB');
-// });
-
 app.use(express.static(__dirname + '/public'));
-
-
 app.get('/', function(req, res) {
     res.sendfile(__dirname + '/index.html');
 });
-
-
 
 
 
@@ -48,54 +33,64 @@ io.sockets.on('connection', function(socket){
 
 
 
-
-
-
 var five = require("johnny-five"),
     board,
     button;
 
-function goal() {
-    var piezo = new five.Piezo(3);
-    piezo.play({
-    // song is composed by an array of pairs of notes and beats
-    // The first argument is the note (null means "no note")
-    // The second argument is the length of time (beat) of the note (or non-note)
-        song: [
-          
-            ["d4", 1/4],
-            [null, 1/8],
-            ["c#4", 1/4],
-            [null, 1/8],
-            ["g5", 1.5] 
-        ],
-        tempo: 150
+board = new five.Board();
+
+board.on("ready", function() {
+    
+    var nightlights = new five.Relay({
+      pin: 10, 
+      type: "NC"
     });
-};
 
-// board = new five.Board();
+    var daylights = new five.Relay({
+      pin: 9, 
+      type: "NC"
+    });
 
-// board.on("ready", function() {
-  
-//     var blueSensor = new five.Button(8);
-//     var redSensor = new five.Button(10);
+    nightlights.off();
+    daylights.off();
 
-//     board.repl.inject({
-//         blueSensor: button,
-//         redSensor: button
-//     });
+    // this.wait(3000, function() {
+    // console.log('Day Lights On');
+    // daylights.on();
 
-//     blueSensor.on("up", function() {
-//         console.log("up");
-//         addpoint("blueplus");
-      
-//     });
+    // });
 
-//     redSensor.on("up", function() {
-//         console.log("up");
-//         addpoint("redplus");
-       
-//     });
 
-//     goal();
-// });
+    function lightScheduler(){
+        
+        var date = new Date();
+        var current_hour = date.getHours();
+        var current_minutes = date.getMinutes();
+        
+        
+
+        if (current_minutes <= 36) {
+            daylights.on();
+            nightlights.on();
+            console.log(current_minutes);
+        }else{
+            daylights.off();
+            console.log("nightlights only")
+        };
+
+        if (true) {
+            nightlights.off();
+        };
+    };
+
+    setInterval(lightScheduler, 5000);
+
+    
+   console.log("boardready");
+   lightScheduler();
+});
+
+
+
+
+
