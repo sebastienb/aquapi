@@ -3,7 +3,8 @@
 <head>
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/css/styles.css" rel="stylesheet">
-	<title>Fooseball Display</title>
+  <link href="/css/jquery.nouislider.css" rel="stylesheet">
+	<title>AquaPi</title>
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -19,14 +20,18 @@
 
 <div class="container">
 	<div class="col-sm-12">
-		
+		<div id="dayLightSlider"></div>
+    <div id="onTime"></div>
+    <div id="offTime"></div>
 	</div>
 </div>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/jquery.nouislider.all.min.js"></script>
 <script src="/js/aqua.js"></script>
+
 </body>
 
 </html>

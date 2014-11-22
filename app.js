@@ -14,6 +14,23 @@ app.get('/', function(req, res) {
 });
 
 
+// Setting vars
+
+var currentTime = ""
+var dayLightStartTime = ""
+var dayLightEndTime = ""
+var dayLightState = ""
+
+var motionState = ""
+var motionCountdown = ""
+
+
+function getCurrentTime () {
+    var date = new Date();
+    var current_hour = date.getHours();
+    var current_minutes = date.getMinutes();
+}
+
 
 // On first client connection start a new game
 io.sockets.on('connection', function(socket){
@@ -63,12 +80,7 @@ board.on("ready", function() {
 
     function lightScheduler(){
         
-        var date = new Date();
-        var current_hour = date.getHours();
-        var current_minutes = date.getMinutes();
-        
-        
-
+       
         if (current_minutes <= 36) {
             daylights.on();
             nightlights.on();
