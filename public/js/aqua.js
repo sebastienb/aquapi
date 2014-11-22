@@ -6,6 +6,21 @@ jQuery(function($){
 	socket.on('connect', function () {
         console.log("connected!!");
         socket.emit('status', 'Display connected');
+
+
+		
+		$('#dayLightSlider').on('set', function(){
+
+			console.log('change dude!');
+			var testvalue = $('#dayLightSlider').val();
+			console.log(testvalue);
+			socket.emit('status', testvalue);
+		});
+
+
+
+
+
 	});
 
 
@@ -46,10 +61,11 @@ jQuery(function($){
 			'95.8333333341%':23,
 			'max': 24
 		},
-		start: [ 7, 1 ],
+		start: [ 7, 15 ],
 		snap:true
-	})
+	});
 
+	
 	$("#dayLightSlider").Link('lower').to($("#onTime"));
 
 	$("#dayLightSlider").Link('upper').to($("#offTime"));

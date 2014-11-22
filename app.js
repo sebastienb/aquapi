@@ -46,61 +46,69 @@ io.sockets.on('connection', function(socket){
         connectCounter--; console.log("connections: "+connectCounter);
     });
 
+    socket.on('status', function(data){
+                
+        console.log(data);
+        
+    });
+
+
+
 }); //end socket connection
 
 
 
-var five = require("johnny-five"),
-    board,
-    button;
+// var five = require("johnny-five"),
+//     board,
+//     button;
 
-board = new five.Board();
+// board = new five.Board();
 
-board.on("ready", function() {
+// board.on("ready", function() {
     
-    var nightlights = new five.Relay({
-      pin: 10, 
-      type: "NC"
-    });
+//     var nightlights = new five.Relay({
+//       pin: 10, 
+//       type: "NC"
+//     });
 
-    var daylights = new five.Relay({
-      pin: 9, 
-      type: "NC"
-    });
+//     var daylights = new five.Relay({
+//       pin: 9, 
+//       type: "NC"
+//     });
 
-    nightlights.off();
-    daylights.off();
+//     nightlights.off();
+//     daylights.off();
 
-    // this.wait(3000, function() {
-    // console.log('Day Lights On');
-    // daylights.on();
+//     // this.wait(3000, function() {
+//     // console.log('Day Lights On');
+//     // daylights.on();
 
-    // });
+//     // });
 
 
-    function lightScheduler(){
+//     function lightScheduler(){
         
        
-        if (current_minutes <= 36) {
-            daylights.on();
-            nightlights.on();
-            console.log(current_minutes);
-        }else{
-            daylights.off();
-            console.log("nightlights only")
-        };
+//         if (current_minutes <= 36) {
+//             daylights.on();
+//             nightlights.on();
+//             console.log(current_minutes);
+//         }else{
+//             daylights.off();
+//             console.log("nightlights only")
+//         };
 
-        if (true) {
-            nightlights.off();
-        };
-    };
+//         if (true) {
+//             nightlights.off();
+//         };
+//     };
 
-    setInterval(lightScheduler, 5000);
+//     setInterval(lightScheduler, 5000);
 
     
-   console.log("boardready");
-   lightScheduler();
-});
+//    console.log("boardready");
+//    lightScheduler();
+// });
 
 
 
