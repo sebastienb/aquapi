@@ -25,10 +25,11 @@ var motionState = ""
 var motionCountdown = ""
 
 
-function getCurrentTime () {
+function getCurrentTime() {
     var date = new Date();
     var current_hour = date.getHours();
     var current_minutes = date.getMinutes();
+    console.log(current_minutes);
 }
 
 
@@ -58,57 +59,58 @@ io.sockets.on('connection', function(socket){
 
 
 
-// var five = require("johnny-five"),
-//     board,
-//     button;
+var five = require("johnny-five"),
+    board,
+    button;
 
-// board = new five.Board();
+board = new five.Board();
 
-// board.on("ready", function() {
+board.on("ready", function() {
     
-//     var nightlights = new five.Relay({
-//       pin: 10, 
-//       type: "NC"
-//     });
+    var nightlights = new five.Relay({
+      pin: 10, 
+      type: "NC"
+    });
 
-//     var daylights = new five.Relay({
-//       pin: 9, 
-//       type: "NC"
-//     });
+    var daylights = new five.Relay({
+      pin: 9, 
+      type: "NC"
+    });
 
-//     nightlights.off();
-//     daylights.off();
+    nightlights.off();
+    daylights.off();
 
-//     // this.wait(3000, function() {
-//     // console.log('Day Lights On');
-//     // daylights.on();
+    // this.wait(3000, function() {
+    // console.log('Day Lights On');
+    // daylights.on();
 
-//     // });
+    // });
 
 
-//     function lightScheduler(){
+    function lightScheduler(){
         
-       
-//         if (current_minutes <= 36) {
-//             daylights.on();
-//             nightlights.on();
-//             console.log(current_minutes);
-//         }else{
-//             daylights.off();
-//             console.log("nightlights only")
-//         };
+        getCurrentTime()
 
-//         if (true) {
-//             nightlights.off();
-//         };
-//     };
+        // if (current_minutes <= 36) {
+        //     daylights.on();
+        //     nightlights.on();
+        //     console.log(current_minutes);
+        // }else{
+        //     daylights.off();
+        //     console.log("nightlights only")
+        // };
 
-//     setInterval(lightScheduler, 5000);
+        // if (true) {
+        //     nightlights.off();
+        // };
+    };
+
+    setInterval(lightScheduler, 5000);
 
     
-//    console.log("boardready");
-//    lightScheduler();
-// });
+   console.log("boardready");
+   lightScheduler();
+});
 
 
 
