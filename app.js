@@ -59,78 +59,129 @@ io.sockets.on('connection', function(socket){
 
 
 
-var five = require("johnny-five"),
-    board,
-    button;
+// var five = require("johnny-five"),
+//     board,
+//     button;
 
-board = new five.Board();
+// board = new five.Board();
 
-board.on("ready", function() {
+// board.on("ready", function() {
     
-    var nightlights = new five.Relay({
-      pin: 10, 
-      type: "NC"
-    });
+//     var nightlights = new five.Relay({
+//       pin: 10, 
+//       type: "NC"
+//     });
 
-    var daylights = new five.Relay({
-      pin: 9, 
-      type: "NC"
-    });
+//     var daylights = new five.Relay({
+//       pin: 9, 
+//       type: "NC"
+//     });
 
-    nightlights.off();
-    daylights.off();
+//     nightlights.off();
+//     daylights.off();
 
-    // this.wait(3000, function() {
-    // console.log('Day Lights On');
-    // daylights.on();
+//     // this.wait(3000, function() {
+//     // console.log('Day Lights On');
+//     // daylights.on();
 
-    // });
+//     // });
 
 
-    function lightScheduler(){
+//     function lightScheduler(){
         
-        getCurrentTime()
+//         getCurrentTime()
 
-        // if (current_minutes <= 36) {
-        //     daylights.on();
-        //     nightlights.on();
-        //     console.log(current_minutes);
-        // }else{
-        //     daylights.off();
-        //     console.log("nightlights only")
-        // };
+//         // if (current_minutes <= 36) {
+//         //     daylights.on();
+//         //     nightlights.on();
+//         //     console.log(current_minutes);
+//         // }else{
+//         //     daylights.off();
+//         //     console.log("nightlights only")
+//         // };
 
-        // if (true) {
-        //     nightlights.off();
-        // };
+//         // if (true) {
+//         //     nightlights.off();
+//         // };
+//     };
+
+//     setInterval(lightScheduler, 5000);
+
+    
+//    console.log("boardready");
+//    lightScheduler();
+
+//     var temperature = new five.Temperature({
+//         pin: "3",
+//         controller: "D18b20"
+//     });
+
+//     temperature.on("change", function(err, data) {
+        
+//         aquaTemp = data.fahrenheit;
+//     });
+
+//     setTimeout(function(){
+//         console.log("fahrenheit: %d", aquaTemp);
+        
+//     },1000);
+
+
+
+var five = require('johnny-five'), board
+
+// 1-wire devices are on pin 20 on Mega
+var pin = 3;
+var board = new five.Board();
+
+board.on("ready", function ()
+            {
+  board.firmata.sendOneWireConfig(pin, true);
+  board.firmata.sendOneWireSearch(pin, function(error, devices) {
+    if(error) {
+      console.error(error);
+      return;
+    }
+
+    // only interested in the first device
+    var device = devices[0];
+
+    var readTemperature = function() {
+      // start transmission
+      board.firmata.sendOneWireReset(pin);
+
+      // a 1-wire select is done by ConfigurableFirmata
+      board.firmata.sendOneWireWrite(pin, device, 0x44);
+
+      // the delay gives the sensor time to do the calculation
+      board.firmata.sendOneWireDelay(pin, 1000);
+
+      // start transmission
+      board.firmata.sendOneWireReset(pin);
+
+      // tell the sensor we want the result and read it from the scratchpad
+      board.firmata.sendOneWireWriteAndRead(pin, device, 0xBE, 9, function(error, data) {
+        if(error) {
+          console.error(error);
+          return;
+        }
+        var raw = (data[1] << 8) | data[0];
+        var celsius = raw / 16.0;
+        var fahrenheit = celsius * 1.8 + 32.0;
+
+        console.info("celsius", celsius);
+        console.info("fahrenheit", fahrenheit);
+      });
     };
-
-    setInterval(lightScheduler, 5000);
-
-    
-   console.log("boardready");
-   lightScheduler();
-
-    var temperature = new five.Temperature({
-        pin: "3",
-        controller: "D18b20"
-    });
-
-    temperature.on("change", function(err, data) {
-        
-        aquaTemp = data.fahrenheit;
-    });
-
-    setTimeout(function(){
-        console.log("fahrenheit: %d", aquaTemp);
-        
-    },1000);
-
-
+    // read the temperature now
+    readTemperature();
+    // and every five seconds
+    setInterval(readTemperature, 5000);
+  });
+});
     
 
 });
-
 
 
 
