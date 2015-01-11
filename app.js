@@ -115,11 +115,15 @@ board.on("ready", function() {
         pin: "A0"
     });
 
-    temperature.on("change", function(err, data) {
-        console.log("celsius: %d", data.celsius);
+    setTimeout(function(){
+
+        temperature.on("change", function(err, data) {
         console.log("fahrenheit: %d", data.fahrenheit);
-        console.log("kelvin: %d", data.kelvin);
-    });
+        });
+    },1000);
+
+
+    
 
 });
 
