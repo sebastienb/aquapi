@@ -117,7 +117,7 @@ board.on("ready", function() {
 
     temperature.on("change", function(err, data) {
         
-        var aquaTemp = data.fahrenheit;
+        aquaTemp = data.fahrenheit;
     });
 
     setTimeout(function(){
