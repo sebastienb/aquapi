@@ -14,6 +14,24 @@ app.get('/', function(req, res) {
 });
 
 
+// Setting vars
+
+var currentTime = ""
+var dayLightStartTime = ""
+var dayLightEndTime = ""
+var dayLightState = ""
+
+var motionState = ""
+var motionCountdown = ""
+
+
+function getCurrentTime() {
+    var date = new Date();
+    var current_hour = date.getHours();
+    var current_minutes = date.getMinutes();
+    console.log(current_minutes);
+}
+
 
 // On first client connection start a new game
 io.sockets.on('connection', function(socket){
@@ -28,6 +46,14 @@ io.sockets.on('connection', function(socket){
     socket.on('disconnect', function() { 
         connectCounter--; console.log("connections: "+connectCounter);
     });
+
+    socket.on('status', function(data){
+                
+        console.log(data);
+        
+    });
+
+
 
 }); //end socket connection
 
@@ -63,30 +89,27 @@ board.on("ready", function() {
 
     function lightScheduler(){
         
-        var date = new Date();
-        var current_hour = date.getHours();
-        var current_minutes = date.getMinutes();
-        
-        
+        getCurrentTime()
 
-        if (current_minutes <= 36) {
-            daylights.on();
-            nightlights.on();
-            console.log(current_minutes);
-        }else{
-            daylights.off();
-            console.log("nightlights only")
-        };
+        // if (current_minutes <= 36) {
+        //     daylights.on();
+        //     nightlights.on();
+        //     console.log(current_minutes);
+        // }else{
+        //     daylights.off();
+        //     console.log("nightlights only")
+        // };
 
-        if (true) {
-            nightlights.off();
-        };
+        // if (true) {
+        //     nightlights.off();
+        // };
     };
 
     setInterval(lightScheduler, 5000);
 
     
    console.log("boardready");
+
 
     // Create a new `motion` hardware instance.
     motion = new five.IR.Motion(7);
@@ -128,6 +151,10 @@ board.on("ready", function() {
 });
 
 
+
+    
+
+});
 
 
 
