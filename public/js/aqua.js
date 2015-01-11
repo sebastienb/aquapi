@@ -33,6 +33,10 @@ jQuery(function($){
 		});
 	});
 
+	socket.on('waterlevel', function(data){
+        $('.waterlevel').html(data);
+        console.log(data);
+    })
 
 	socket.on('disconnect', function () {
         console.log("disconnected!!");

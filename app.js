@@ -24,6 +24,8 @@ var dayLightState = ""
 var motionState = ""
 var motionCountdown = ""
 
+var waterlevel = ""
+
 
 function getCurrentTime() {
     var date = new Date();
@@ -51,10 +53,25 @@ board.on("ready", function() {
       type: "NO"
     });
 
+    ping = new five.Ping(9);
+
     nightlights.off();
     daylights.off();
 
     
+    // "data" get the current reading from the ping
+    ping.on("data", function( err, value ) {
+        // console.log( "data", value );
+    });
+
+    ping.on("change", function( err, value ) {
+
+        // console.log( "Object is " + this.inches + "inches away" );
+        waterlevel =  this.inches;
+
+    });
+
+
 
     // this.wait(3000, function() {
     // console.log('Day Lights On');
@@ -176,6 +193,11 @@ board.on("ready", function() {
                 nightlights.off();
             };
         });
+
+
+        setInterval(function(){
+            io.emit('waterlevel', waterlevel);
+        }, 1000);
 
 
     }); //end socket connection
