@@ -6,21 +6,30 @@ jQuery(function($){
 	socket.on('connect', function () {
         console.log("connected!!");
         socket.emit('status', 'Display connected');
-
-
 		
 		$('#dayLightSlider').on('set', function(){
 
 			console.log('change dude!');
 			var testvalue = $('#dayLightSlider').val();
 			console.log(testvalue);
-			socket.emit('status', testvalue);
+			socket.emit('schedule', testvalue);
 		});
 
+		$('#day-on').click(function(){
+			socket.emit('lights', 'day-on')
+		});
 
+		$('#day-off').click(function(){
+			socket.emit('lights', 'day-off')
+		});
 
+		$('#night-on').click(function(){
+			socket.emit('lights', 'night-on')
+		});
 
-
+		$('#night-off').click(function(){
+			socket.emit('lights', 'night-off')
+		});
 	});
 
 

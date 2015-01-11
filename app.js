@@ -29,7 +29,7 @@ function getCurrentTime() {
     var date = new Date();
     var current_hour = date.getHours();
     var current_minutes = date.getMinutes();
-    console.log(current_minutes);
+    // console.log(current_minutes);
 }
 
 
@@ -50,13 +50,15 @@ io.sockets.on('connection', function(socket){
     socket.on('status', function(data){
                 
         console.log(data);
-        
+    });
+
+    socket.on('lights', function(data){
+                
+        console.log(data);
     });
 
 
-
 }); //end socket connection
-
 
 
 var five = require("johnny-five"),
@@ -68,13 +70,13 @@ board = new five.Board();
 board.on("ready", function() {
     
     var nightlights = new five.Relay({
-      pin: 10, 
-      type: "NC"
+      pin: 4, 
+      type: "NO"
     });
 
     var daylights = new five.Relay({
-      pin: 9, 
-      type: "NC"
+      pin: 5, 
+      type: "NO"
     });
 
     nightlights.off();
@@ -85,7 +87,6 @@ board.on("ready", function() {
     // daylights.on();
 
     // });
-
 
     function lightScheduler(){
         
@@ -108,11 +109,11 @@ board.on("ready", function() {
     setInterval(lightScheduler, 5000);
 
     
-   console.log("boardready");
+    console.log("boardready");
 
 
     // Create a new `motion` hardware instance.
-    motion = new five.IR.Motion(7);
+    motion = new five.IR.Motion(8);
 
     // Inject the `motion` hardware into
     // the Repl instance's context;
@@ -132,29 +133,27 @@ board.on("ready", function() {
     // proximal area is disrupted, generally by some form of movement
     motion.on("motionstart", function(err, ts) {
         console.log("motionstart", ts);
-
         nightlights.on();
-
+        motionState= "active";
+        console.log('Night lights trigered');
     });
 
     // "motionsend" events are fired following a "motionstart event
     // when no movement has occurred in X ms
     motion.on("motionend", function(err, ts) {
-        console.log("motionend", ts);
-
+        console.log("no more motion lights off in 1 minute", ts);
+        motionState = "none";
         setTimeout(function(){
-            console.log('no more motion lights off in 8 seconds')
-            nightlights.off();
-        }, 8000);
+            if (motionState == "none") {
+                console.log('Night Lights Off')
+                nightlights.off();
+                motionState = "none";
+            };
+        }, 1200000);
 
     });
+
+    // setInterval(function(){
+    //         console.log(motionState)
+    // }, 500);
 });
-
-
-
-    
-
-});
-
-
-

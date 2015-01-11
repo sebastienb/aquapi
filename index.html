@@ -19,15 +19,27 @@
 </nav>
 
 <div class="container">
-	<div class="col-sm-12">
-		<div id="dayLightSlider"></div>
-    <div id="onTime"></div>
-    <div id="offTime"></div>
-	</div>
+	<div class="row">
+    <div class="col-sm-12">
+      <h2>Schedule lights</h2>
+      <div id="dayLightSlider"></div>
+      <div id="onTime"></div>
+      <div id="offTime"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <hr/>
+      <h2>Maunal control of lights</h2>
+      <button id="day-on" class="btn btn-primary">Day lights On</button>
+      <button id="day-off" class="btn btn-primary">Day lights Off</button>
+      <button id="night-on" class="btn btn-primary">Night lights On</button>
+      <button id="night-off" class="btn btn-primary">Night lights Off</button>
+    </div>
+  </div>
 </div>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
-
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/jquery.nouislider.all.min.js"></script>
 <script src="/js/aqua.js"></script>
