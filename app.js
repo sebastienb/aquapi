@@ -59,61 +59,78 @@ io.sockets.on('connection', function(socket){
 
 
 
-var five = require("johnny-five"),
-    board,
-    button;
+// var five = require("johnny-five"),
+//     board,
+//     button;
 
-board = new five.Board();
+// board = new five.Board();
 
-board.on("ready", function() {
+// board.on("ready", function() {
     
-    var nightlights = new five.Relay({
-      pin: 10, 
-      type: "NC"
-    });
+//     var nightlights = new five.Relay({
+//       pin: 10, 
+//       type: "NC"
+//     });
 
-    var daylights = new five.Relay({
-      pin: 9, 
-      type: "NC"
-    });
+//     var daylights = new five.Relay({
+//       pin: 9, 
+//       type: "NC"
+//     });
 
-    nightlights.off();
-    daylights.off();
+//     nightlights.off();
+//     daylights.off();
 
-    // this.wait(3000, function() {
-    // console.log('Day Lights On');
-    // daylights.on();
+//     // this.wait(3000, function() {
+//     // console.log('Day Lights On');
+//     // daylights.on();
 
-    // });
+//     // });
 
 
-    function lightScheduler(){
+//     function lightScheduler(){
         
-        getCurrentTime()
+//         getCurrentTime()
 
-        // if (current_minutes <= 36) {
-        //     daylights.on();
-        //     nightlights.on();
-        //     console.log(current_minutes);
-        // }else{
-        //     daylights.off();
-        //     console.log("nightlights only")
-        // };
+//         // if (current_minutes <= 36) {
+//         //     daylights.on();
+//         //     nightlights.on();
+//         //     console.log(current_minutes);
+//         // }else{
+//         //     daylights.off();
+//         //     console.log("nightlights only")
+//         // };
 
-        // if (true) {
-        //     nightlights.off();
-        // };
-    };
+//         // if (true) {
+//         //     nightlights.off();
+//         // };
+//     };
 
-    setInterval(lightScheduler, 5000);
+//     setInterval(lightScheduler, 5000);
 
     
-   console.log("boardready");
-   lightScheduler();
+//    console.log("boardready");
+//    lightScheduler();
 
-   var pin = 3;
+   
+   var five = require('johnny-five'), board
 
-   var readTemperature = function() {
+// 1-wire devices are on pin 20 on Mega
+var pin = 20;
+var board = new five.Board();
+
+board.on("ready", function ()
+            {
+  board.firmata.sendOneWireConfig(pin, true);
+  board.firmata.sendOneWireSearch(pin, function(error, devices) {
+    if(error) {
+      console.error(error);
+      return;
+    }
+
+    // only interested in the first device
+    var device = devices[0];
+
+    var readTemperature = function() {
       // start transmission
       board.firmata.sendOneWireReset(pin);
 
@@ -144,6 +161,8 @@ board.on("ready", function() {
     readTemperature();
     // and every five seconds
     setInterval(readTemperature, 5000);
+  });
+});
 
     
 
