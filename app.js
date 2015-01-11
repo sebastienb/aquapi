@@ -115,12 +115,14 @@ board.on("ready", function() {
         pin: "A0"
     });
 
+    temperature.on("change", function(err, data) {
+        
+        var aquaTemp = data.fahrenheit;
+    });
+
     setTimeout(function(){
-        console.log("fahrenheit: %d", data.fahrenheit);
+        console.log("fahrenheit: %d", aquaTemp);
         
-        temperature.on("change", function(err, data) {
-        
-        });
     },1000);
 
 
