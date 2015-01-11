@@ -5,6 +5,7 @@ jQuery(function($){
 	
 	socket.on('connect', function () {
         console.log("connected!!");
+        $('#notice').addClass('hide');
         socket.emit('status', 'Display connected');
 		
 		$('#dayLightSlider').on('set', function(){
@@ -35,9 +36,11 @@ jQuery(function($){
 
 	socket.on('disconnect', function () {
         console.log("disconnected!!");
-        alertDiv.html("Lost connection to server!");
-       
-	});
+        
+    	$('#notice').removeClass('hide');
+		// Animation complete
+		$('#notice').html("Lost connection to server, trying to reconnect");
+  	});
 
 	$("#dayLightSlider").noUiSlider({
 		
@@ -73,10 +76,8 @@ jQuery(function($){
 		start: [ 7, 15 ],
 		snap:true
 	});
-
 	
 	$("#dayLightSlider").Link('lower').to($("#onTime"));
-
 	$("#dayLightSlider").Link('upper').to($("#offTime"));
 
 });

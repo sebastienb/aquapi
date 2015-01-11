@@ -33,34 +33,6 @@ function getCurrentTime() {
 }
 
 
-// On first client connection start a new game
-io.sockets.on('connection', function(socket){
-
-    
-    connectCounter++;
-    console.log("connections: "+connectCounter);
-    console.log('New device connected'.green);
-    io.emit('status', 'New device connected!');
-
-    
-    socket.on('disconnect', function() { 
-        connectCounter--; console.log("connections: "+connectCounter);
-    });
-
-    socket.on('status', function(data){
-                
-        console.log(data);
-    });
-
-    socket.on('lights', function(data){
-                
-        console.log(data);
-    });
-
-
-}); //end socket connection
-
-
 var five = require("johnny-five"),
     board,
     button;
@@ -82,6 +54,8 @@ board.on("ready", function() {
     nightlights.off();
     daylights.off();
 
+    
+
     // this.wait(3000, function() {
     // console.log('Day Lights On');
     // daylights.on();
@@ -90,7 +64,7 @@ board.on("ready", function() {
 
     function lightScheduler(){
         
-        getCurrentTime()
+        getCurrentTime();
 
         // if (current_minutes <= 36) {
         //     daylights.on();
@@ -156,4 +130,53 @@ board.on("ready", function() {
     // setInterval(function(){
     //         console.log(motionState)
     // }, 500);
+
+    // On first client connection start a new game
+    io.sockets.on('connection', function(socket){
+
+        
+        connectCounter++;
+        console.log("connections: "+connectCounter);
+        console.log('New device connected'.green);
+        io.emit('status', 'New device connected!');
+
+        
+        socket.on('disconnect', function() { 
+            connectCounter--; console.log("connections: "+connectCounter);
+        });
+
+        socket.on('status', function(data){
+                    
+            console.log(data);
+        });
+
+        socket.on('lights', function(data){
+                   
+            console.log(data);
+            if (data == "day-on") {
+                console.log('data was dayon!!');
+                nightlights.on();
+                daylights.on();
+            };
+
+            if (data == "day-off") {
+                console.log('data was dayon!!');
+                nightlights.off();
+                daylights.off();
+            };
+
+            if (data == "night-on") {
+                console.log('data was dayon!!');
+                nightlights.on();
+                daylights.off();
+            };
+
+            if (data == "night-off") {
+                console.log('data was dayon!!');
+                nightlights.off();
+            };
+        });
+
+
+    }); //end socket connection
 });
