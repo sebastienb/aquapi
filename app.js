@@ -116,9 +116,10 @@ board.on("ready", function() {
     });
 
     setTimeout(function(){
-
-        temperature.on("change", function(err, data) {
         console.log("fahrenheit: %d", data.fahrenheit);
+        
+        temperature.on("change", function(err, data) {
+        
         });
     },1000);
 
