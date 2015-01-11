@@ -112,7 +112,8 @@ board.on("ready", function() {
    lightScheduler();
 
     var temperature = new five.Temperature({
-        pin: "A0"
+        pin: "3",
+        controller: "D18b20"
     });
 
     temperature.on("change", function(err, data) {
