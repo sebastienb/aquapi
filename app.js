@@ -87,7 +87,44 @@ board.on("ready", function() {
 
     
    console.log("boardready");
-   lightScheduler();
+
+    // Create a new `motion` hardware instance.
+    motion = new five.IR.Motion(7);
+
+    // Inject the `motion` hardware into
+    // the Repl instance's context;
+    // allows direct command line access
+    this.repl.inject({
+    motion: motion
+    });
+
+    // Pir Event API
+
+    // "calibrated" occurs once, at the beginning of a session,
+    motion.on("calibrated", function(err, ts) {
+    console.log("calibrated", ts);
+    });
+
+    // "motionstart" events are fired when the "calibrated"
+    // proximal area is disrupted, generally by some form of movement
+    motion.on("motionstart", function(err, ts) {
+        console.log("motionstart", ts);
+
+        nightlights.on();
+
+    });
+
+    // "motionsend" events are fired following a "motionstart event
+    // when no movement has occurred in X ms
+    motion.on("motionend", function(err, ts) {
+        console.log("motionend", ts);
+
+        setTimeout(function(){
+            console.log('no more motion lights off in 8 seconds')
+            nightlights.off();
+        }, 8000);
+
+    });
 });
 
 
