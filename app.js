@@ -163,9 +163,16 @@ board.on("ready", function() {
         });
 
         socket.on('status', function(data){
-                    
             console.log(data);
         });
+
+        socket.on('schedule', function(data){
+            console.log(data);
+            lightSchedule = data;
+            console.log('start is '+ lightSchedule[0]);
+            console.log('end is '+ lightSchedule[1]);
+
+        })
 
         socket.on('lights', function(data){
                    
