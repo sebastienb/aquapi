@@ -125,23 +125,21 @@ board.on("ready", function() {
     motion.on("motionstart", function(err, ts) {
         console.log("motionstart", ts);
         nightlights.on();
-        motionState= "active";
+        motionState = "active";
         console.log('Night lights trigered');
     });
 
     // "motionsend" events are fired following a "motionstart event
     // when no movement has occurred in X ms
     motion.on("motionend", function(err, ts) {
-        console.log("no more motion lights off in 1 minute", ts);
+        console.log("no more motion lights off in 2 minutes", ts);
         motionState = "none";
         setTimeout(function(){
             if (motionState == "none") {
                 console.log('Night Lights Off')
                 nightlights.off();
-                motionState = "none";
             };
         }, 1200000);
-
     });
 
     // setInterval(function(){
@@ -151,13 +149,11 @@ board.on("ready", function() {
     // On first client connection start a new game
     io.sockets.on('connection', function(socket){
 
-        
         connectCounter++;
         console.log("connections: "+connectCounter);
         console.log('New device connected'.green);
         io.emit('status', 'New device connected!');
 
-        
         socket.on('disconnect', function() { 
             connectCounter--; console.log("connections: "+connectCounter);
         });
