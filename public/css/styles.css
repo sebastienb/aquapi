@@ -1,3 +1,13 @@
 body{
 	padding-top: 100px;
 }
+
+#onTime{
+	float: left;
+	padding:10px;
+}
+
+#offTime{
+	float: right;
+	padding:10px;
+}
