@@ -179,13 +179,11 @@ board.on("ready", function() {
             console.log(data);
             if (data == "day-on") {
                 console.log('data was dayon!!');
-                nightlights.on();
                 daylights.on();
             };
 
             if (data == "day-off") {
                 console.log('data was dayon!!');
-                nightlights.off();
                 daylights.off();
             };
 
