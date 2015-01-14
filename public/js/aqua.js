@@ -2,18 +2,35 @@ jQuery(function($){
 		
 	var socket = io.connect();
 
-	
+	//settings
+	var dayLightSchedule= "",
+		dayLightState= "",
+		nightLightState= ""
+		dayLightStartTime="",
+		dayLightEndTime="";
+
+	function sendSettings(){
+		socket.emit('settings', {
+			dayLightSchedule: dayLightSchedule,
+			dayLightState: dayLightState,
+			nightLightState: nightLightState,
+			dayLightStartTime: dayLightStartTime,
+			dayLightEndTime:dayLightEndTime,
+		});
+	};
+
+
 	socket.on('connect', function () {
         console.log("connected!!");
         $('#notice').addClass('hide');
         socket.emit('status', 'Display connected');
 		
 		$('#dayLightSlider').on('set', function(){
-
 			console.log('change dude!');
 			var testvalue = $('#dayLightSlider').val();
 			console.log(testvalue);
 			socket.emit('schedule', testvalue);
+			 //sendSettings();
 		});
 
 		$('#day-on').click(function(){
@@ -36,7 +53,20 @@ jQuery(function($){
 	socket.on('waterlevel', function(data){
         $('.waterlevel').html(data);
         console.log(data);
-    })
+    });
+
+    socket.on('settings', function(data){
+        console.log(data);
+        dayLightSchedule= data.dayLightSchedule;
+		dayLightState= data.dayLightState; 
+		nightLightState= data.nightLightState;
+		dayLightStartTime= data.dayLightStartTime;
+		dayLightEndTime= data.dayLightEndTime;
+		$("#dayLightSlider").val([dayLightStartTime, dayLightEndTime]);
+		
+		
+    });
+
 
 	socket.on('disconnect', function () {
         console.log("disconnected!!");
@@ -83,5 +113,6 @@ jQuery(function($){
 	
 	$("#dayLightSlider").Link('lower').to($("#onTime"));
 	$("#dayLightSlider").Link('upper').to($("#offTime"));
+	$("[name='my-checkbox']").bootstrapSwitch();
 
 });

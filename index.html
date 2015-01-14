@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/bootstrap-switch.min.css" rel="stylesheet">
 	<link href="/css/styles.css" rel="stylesheet">
   <link href="/css/jquery.nouislider.css" rel="stylesheet">
 	<title>AquaPi</title>
@@ -35,7 +36,7 @@
 
   <div class="row">
     <div class="col-sm-12">
-      <h2>Schedule lights</h2>
+      <h2>Daylight Schedule <input type="checkbox" name="my-checkbox" checked></h2>
       <div id="dayLightSlider"></div>
       <div id="onTime"></div>
       <div id="offTime"></div>
@@ -54,6 +55,7 @@
 </div>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-switch.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/jquery.nouislider.all.min.js"></script>
 <script src="/js/aqua.js"></script>

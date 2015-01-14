@@ -26,9 +26,14 @@ app.get('/', function(req, res) {
 // Setting vars
 
 var currentTime = ""
+
+var dayLightSchedule = "on"
 var dayLightStartTime = "7"
-var dayLightEndTime = "5"
+var dayLightEndTime = "17"
 var dayLightState = ""
+var nightLightState = ""
+var current_hour = ""
+var current_minutes = ""
 
 var motionState = ""
 var motionCountdown = ""
@@ -38,8 +43,8 @@ var waterlevel = ""
 
 function getCurrentTime() {
     var date = new Date();
-    var current_hour = date.getHours();
-    var current_minutes = date.getMinutes();
+     current_hour = date.getHours();
+     current_minutes = date.getMinutes();
     // console.log(current_minutes);
 }
 
@@ -48,7 +53,9 @@ var five = require("johnny-five"),
     board,
     button;
 
-board = new five.Board();
+board = new five.Board({
+    port:'/dev/cu.usbmodem1411'
+});
 
 board.on("ready", function() {
     
@@ -62,23 +69,23 @@ board.on("ready", function() {
       type: "NO"
     });
 
-    ping = new five.Ping(9);
+    
 
     nightlights.off();
     daylights.off();
 
-    
-    // "data" get the current reading from the ping
-    ping.on("data", function( err, value ) {
-        // console.log( "data", value );
-    });
+    // ping = new five.Ping(9);
+    // // "data" get the current reading from the ping
+    // ping.on("data", function( err, value ) {
+    //     // console.log( "data", value );
+    // });
 
-    ping.on("change", function( err, value ) {
+    // ping.on("change", function( err, value ) {
 
-        // console.log( "Object is " + this.inches + "inches away" );
-        waterlevel =  this.inches;
+    //     // console.log( "Object is " + this.inches + "inches away" );
+    //     waterlevel =  this.inches;
 
-    });
+    // });
 
 
 
@@ -94,13 +101,41 @@ board.on("ready", function() {
     function lightScheduler(){
         
         getCurrentTime();
+        console.log('current hour is '+ current_hour);
 
-        if (current_hour  >= dayLightStartTime && current_hour <= dayLightEndTime ) {
-            daylights.on();
-        }else{
-            daylights.off();
-            console.log("Daylight on")
+        if (dayLightSchedule = "on") {
+
+            if (current_hour  >= dayLightStartTime && current_hour <= dayLightEndTime ) {
+                daylights.on();
+            }else{
+                daylights.off();
+                console.log("Daylight off")
+            };
+
         };
+        
+    };
+
+    function sendSettings(){
+        
+        io.emit('settings', {
+            dayLightSchedule: dayLightSchedule,
+            dayLightState: dayLightState,
+            nightLightState: nightLightState,
+            dayLightStartTime: dayLightStartTime,
+            dayLightEndTime:dayLightEndTime,
+        });
+    };
+
+    function broadcastSettings(){
+        
+        socket.boradcast.emit('settings', {
+            dayLightSchedule: dayLightSchedule,
+            dayLightState: dayLightState,
+            nightLightState: nightLightState,
+            dayLightStartTime: dayLightStartTime,
+            dayLightEndTime:dayLightEndTime,
+        });
     };
 
     setInterval(lightScheduler, 5000);
@@ -109,44 +144,45 @@ board.on("ready", function() {
     console.log("boardready");
 
 
-    // Create a new `motion` hardware instance.
-    motion = new five.IR.Motion(8);
+    // // Create a new `motion` hardware instance.
+    // motion = new five.IR.Motion(8);
 
-    // Inject the `motion` hardware into
-    // the Repl instance's context;
-    // allows direct command line access
-    this.repl.inject({
-    motion: motion
-    });
+    // // Inject the `motion` hardware into
+    // // the Repl instance's context;
+    // // allows direct command line access
+    // this.repl.inject({
+    // motion: motion
+    // });
 
-    // Pir Event API
+    // // Pir Event API
 
-    // "calibrated" occurs once, at the beginning of a session,
-    motion.on("calibrated", function(err, ts) {
-    console.log("calibrated", ts);
-    });
+    // // "calibrated" occurs once, at the beginning of a session,
+    // motion.on("calibrated", function(err, ts) {
+    // console.log("calibrated", ts);
+    // });
 
-    // "motionstart" events are fired when the "calibrated"
-    // proximal area is disrupted, generally by some form of movement
-    motion.on("motionstart", function(err, ts) {
-        console.log("motionstart", ts);
-        nightlights.on();
-        motionState = "active";
-        console.log('Night lights trigered');
-    });
+    // // "motionstart" events are fired when the "calibrated"
+    // // proximal area is disrupted, generally by some form of movement
+    // motion.on("motionstart", function(err, ts) {
+    //     console.log("motionstart", ts);
+    //     nightlights.on();
+    //     motionState = "active";
+    //     console.log('Night lights trigered');
+    // });
 
-    // "motionsend" events are fired following a "motionstart event
-    // when no movement has occurred in X ms
-    motion.on("motionend", function(err, ts) {
-        console.log("no more motion lights off in 2 minutes", ts);
-        motionState = "none";
-        setTimeout(function(){
-            if (motionState == "none") {
-                console.log('Night Lights Off')
-                nightlights.off();
-            };
-        }, 1200000);
-    });
+    // // "motionsend" events are fired following a "motionstart event
+    // // when no movement has occurred in X ms
+    
+    // motion.on("motionend", function(err, ts) {
+    //     console.log("no more motion lights off in 2 minutes", ts);
+    //     motionState = "none";
+    //     setTimeout(function(){
+    //         if (motionState == "none") {
+    //             console.log('Night Lights Off')
+    //             nightlights.off();
+    //         };
+    //     }, 1200000);
+    // });
 
     // setInterval(function(){
     //         console.log(motionState)
@@ -159,7 +195,11 @@ board.on("ready", function() {
         console.log("connections: "+connectCounter);
         console.log('New device connected'.green);
         io.emit('status', 'New device connected!');
+        
 
+        
+         sendSettings();
+        
         socket.on('disconnect', function() { 
             connectCounter--; console.log("connections: "+connectCounter);
         });
@@ -169,12 +209,29 @@ board.on("ready", function() {
         });
 
         socket.on('schedule', function(data){
-            console.log(data);
+            console.log('new schedule data '+data);
             lightSchedule = data;
             console.log('start is '+ lightSchedule[0]);
-            console.log('end is '+ lightSchedule[1]);
+            dayLightStartTime = lightSchedule[0];
 
-        })
+            console.log('end is '+ lightSchedule[1]);
+            dayLightEndTime = lightSchedule[1];
+            
+            broadcastSettings();
+
+        });
+
+
+        socket.on('settings', function(data){
+            console.log(data);
+            dayLightSchedule= data.dayLightSchedule;
+            dayLightState= data.dayLightState; 
+            nightLightState= data.nightLightState;
+            dayLightStartTime= data.dayLightStartTime;
+            dayLightEndTime= data.dayLightEndTime;
+            sendSettings();
+            
+        });
 
         socket.on('lights', function(data){
                    
@@ -202,9 +259,11 @@ board.on("ready", function() {
         });
 
 
-        setInterval(function(){
-            io.emit('waterlevel', waterlevel);
-        }, 1000);
+
+
+        // setInterval(function(){
+        //     io.emit('waterlevel', waterlevel);
+        // }, 1000);
 
 
     }); //end socket connection
