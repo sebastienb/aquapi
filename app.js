@@ -6,6 +6,15 @@ var express = require('express'),
     mongoose = require('mongoose'),
     connectCounter = "0";
 
+
+// Database stuff
+mongoose.connect('mongodb://aquapi:dexter@ds031641.mongolab.com:31641/aquapi');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+  console.log('Yay connected to DB');
+});
+
 server.listen(3000);
 
 app.use(express.static(__dirname + '/public'));
@@ -17,8 +26,8 @@ app.get('/', function(req, res) {
 // Setting vars
 
 var currentTime = ""
-var dayLightStartTime = ""
-var dayLightEndTime = ""
+var dayLightStartTime = "7"
+var dayLightEndTime = "5"
 var dayLightState = ""
 
 var motionState = ""
@@ -79,22 +88,19 @@ board.on("ready", function() {
 
     // });
 
+
+
+
     function lightScheduler(){
         
         getCurrentTime();
 
-        // if (current_minutes <= 36) {
-        //     daylights.on();
-        //     nightlights.on();
-        //     console.log(current_minutes);
-        // }else{
-        //     daylights.off();
-        //     console.log("nightlights only")
-        // };
-
-        // if (true) {
-        //     nightlights.off();
-        // };
+        if (current_hour  >= dayLightStartTime && current_hour <= dayLightEndTime ) {
+            daylights.on();
+        }else{
+            daylights.off();
+            console.log("Daylight on")
+        };
     };
 
     setInterval(lightScheduler, 5000);
