@@ -39,6 +39,7 @@ var motionState = ""
 var motionCountdown = ""
 
 var waterlevel = ""
+var servo
 
 
 function getCurrentTime() {
@@ -78,14 +79,13 @@ board.on("ready", function() {
 
     // Start fish feeder
 
-        var servo = new five.Servo({
+        servo = new five.Servo({
             pin: 12, 
-            type: "continuous",
-            range: [ 0, 300 ]
+            type: "continuous"
         });
 
         // Clockwise, top speed.
-         servo.to(90, 500);
+         //servo.to(90, 500);
          
     // end fish feeder
 
@@ -270,6 +270,24 @@ board.on("ready", function() {
             if (data == "night-off") {
                 console.log('data was dayon!!');
                 nightlights.off();
+            };
+        });
+
+        socket.on('feeder', function(data){
+            console.log(data);
+            if (data == "feed-1") {
+                console.log('feed 1 pressed');
+
+                servo.to(90, 500);
+            };
+
+            if (data == "feed-2") {
+                console.log('feed 2 pressed');
+                servo.cw(0.8);
+                setTimeout(function() { 
+                    servo.stop();
+                }, 400)
+
             };
         });
 

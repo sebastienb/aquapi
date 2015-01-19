@@ -48,6 +48,16 @@ jQuery(function($){
 		$('#night-off').click(function(){
 			socket.emit('lights', 'night-off')
 		});
+
+		// Fish feeder btns
+
+		$('#feed-1').click(function(){
+			socket.emit('feeder', 'feed-1')
+		});
+
+		$('#feed-2').click(function(){
+			socket.emit('feeder', 'feed-2')
+		});
 	});
 
 	socket.on('waterlevel', function(data){
