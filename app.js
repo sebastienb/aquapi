@@ -54,7 +54,7 @@ var five = require("johnny-five"),
     button;
 
 board = new five.Board({
-    port:'/dev/cu.usbmodem1411'
+    // port:'/dev/cu.usbmodem1411'
 });
 
 board.on("ready", function() {
@@ -74,26 +74,41 @@ board.on("ready", function() {
     nightlights.off();
     daylights.off();
 
-    // ping = new five.Ping(9);
-    // // "data" get the current reading from the ping
-    // ping.on("data", function( err, value ) {
-    //     // console.log( "data", value );
-    // });
-
-    // ping.on("change", function( err, value ) {
-
-    //     // console.log( "Object is " + this.inches + "inches away" );
-    //     waterlevel =  this.inches;
-
-    // });
 
 
+    // Start fish feeder
 
-    // this.wait(3000, function() {
-    // console.log('Day Lights On');
-    // daylights.on();
+        var servo = new five.Servo({
+            pin: 12, 
+            type: "continuous",
+            range: [ 0, 300 ]
+        });
 
-    // });
+        // Clockwise, top speed.
+         servo.to(90, 500);
+         
+    // end fish feeder
+
+    ping = new five.Ping(9);
+    // "data" get the current reading from the ping
+    ping.on("data", function( err, value ) {
+        // console.log( "data", value );
+    });
+
+    ping.on("change", function( err, value ) {
+
+        // console.log( "Object is " + this.inches + "inches away" );
+        waterlevel =  this.inches;
+
+    });
+
+
+
+    this.wait(3000, function() {
+    console.log('Day Lights On');
+    daylights.on();
+
+    });
 
 
 
@@ -118,24 +133,24 @@ board.on("ready", function() {
 
     function sendSettings(){
         
-        io.emit('settings', {
-            dayLightSchedule: dayLightSchedule,
-            dayLightState: dayLightState,
-            nightLightState: nightLightState,
-            dayLightStartTime: dayLightStartTime,
-            dayLightEndTime:dayLightEndTime,
-        });
+        // io.emit('settings', {
+        //     dayLightSchedule: dayLightSchedule,
+        //     dayLightState: dayLightState,
+        //     nightLightState: nightLightState,
+        //     dayLightStartTime: dayLightStartTime,
+        //     dayLightEndTime:dayLightEndTime,
+        // });
     };
 
     function broadcastSettings(){
         
-        socket.boradcast.emit('settings', {
-            dayLightSchedule: dayLightSchedule,
-            dayLightState: dayLightState,
-            nightLightState: nightLightState,
-            dayLightStartTime: dayLightStartTime,
-            dayLightEndTime:dayLightEndTime,
-        });
+        // socket.boradcast.emit('settings', {
+        //     dayLightSchedule: dayLightSchedule,
+        //     dayLightState: dayLightState,
+        //     nightLightState: nightLightState,
+        //     dayLightStartTime: dayLightStartTime,
+        //     dayLightEndTime:dayLightEndTime,
+        // });
     };
 
     setInterval(lightScheduler, 5000);
@@ -144,49 +159,49 @@ board.on("ready", function() {
     console.log("boardready");
 
 
-    // // Create a new `motion` hardware instance.
-    // motion = new five.IR.Motion(8);
+    // Create a new `motion` hardware instance.
+    motion = new five.IR.Motion(8);
 
-    // // Inject the `motion` hardware into
-    // // the Repl instance's context;
-    // // allows direct command line access
-    // this.repl.inject({
-    // motion: motion
-    // });
+    // Inject the `motion` hardware into
+    // the Repl instance's context;
+    // allows direct command line access
+    this.repl.inject({
+    motion: motion
+    });
 
-    // // Pir Event API
+    // Pir Event API
 
-    // // "calibrated" occurs once, at the beginning of a session,
-    // motion.on("calibrated", function(err, ts) {
-    // console.log("calibrated", ts);
-    // });
+    // "calibrated" occurs once, at the beginning of a session,
+    motion.on("calibrated", function(err, ts) {
+    console.log("calibrated", ts);
+    });
 
-    // // "motionstart" events are fired when the "calibrated"
-    // // proximal area is disrupted, generally by some form of movement
-    // motion.on("motionstart", function(err, ts) {
-    //     console.log("motionstart", ts);
-    //     nightlights.on();
-    //     motionState = "active";
-    //     console.log('Night lights trigered');
-    // });
+    // "motionstart" events are fired when the "calibrated"
+    // proximal area is disrupted, generally by some form of movement
+    motion.on("motionstart", function(err, ts) {
+        console.log("motionstart", ts);
+        nightlights.on();
+        motionState = "active";
+        console.log('Night lights trigered');
+    });
 
-    // // "motionsend" events are fired following a "motionstart event
-    // // when no movement has occurred in X ms
+    // "motionsend" events are fired following a "motionstart event
+    // when no movement has occurred in X ms
     
-    // motion.on("motionend", function(err, ts) {
-    //     console.log("no more motion lights off in 2 minutes", ts);
-    //     motionState = "none";
-    //     setTimeout(function(){
-    //         if (motionState == "none") {
-    //             console.log('Night Lights Off')
-    //             nightlights.off();
-    //         };
-    //     }, 1200000);
-    // });
+    motion.on("motionend", function(err, ts) {
+        console.log("no more motion lights off in 2 minutes", ts);
+        motionState = "none";
+        setTimeout(function(){
+            if (motionState == "none") {
+                console.log('Night Lights Off')
+                nightlights.off();
+            };
+        }, 1200000);
+    });
 
-    // setInterval(function(){
-    //         console.log(motionState)
-    // }, 500);
+    setInterval(function(){
+            console.log(motionState)
+    }, 500);
 
     // On first client connection start a new game
     io.sockets.on('connection', function(socket){
@@ -261,9 +276,9 @@ board.on("ready", function() {
 
 
 
-        // setInterval(function(){
-        //     io.emit('waterlevel', waterlevel);
-        // }, 1000);
+        setInterval(function(){
+            io.emit('waterlevel', waterlevel);
+        }, 1000);
 
 
     }); //end socket connection
