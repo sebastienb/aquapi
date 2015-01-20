@@ -55,7 +55,7 @@ var five = require("johnny-five"),
     button;
 
 board = new five.Board({
-    // port:'/dev/cu.usbmodem1411'
+     port:'/dev/cu.usbmodem1411'
 });
 
 board.on("ready", function() {
@@ -70,24 +70,15 @@ board.on("ready", function() {
       type: "NO"
     });
 
-    
+    servo = new five.Servo({
+        pin: 12, 
+        type: "continuous"
+    });
 
+    servo.stop();
     nightlights.off();
     daylights.off();
 
-
-
-    // Start fish feeder
-
-        servo = new five.Servo({
-            pin: 12, 
-            type: "continuous"
-        });
-
-        // Clockwise, top speed.
-         //servo.to(90, 500);
-         
-    // end fish feeder
 
     ping = new five.Ping(9);
     // "data" get the current reading from the ping
@@ -211,9 +202,7 @@ board.on("ready", function() {
         console.log('New device connected'.green);
         io.emit('status', 'New device connected!');
         
-
-        
-         sendSettings();
+        sendSettings();
         
         socket.on('disconnect', function() { 
             connectCounter--; console.log("connections: "+connectCounter);
@@ -235,7 +224,6 @@ board.on("ready", function() {
             broadcastSettings();
 
         });
-
 
         socket.on('settings', function(data){
             console.log(data);
@@ -278,20 +266,21 @@ board.on("ready", function() {
             if (data == "feed-1") {
                 console.log('feed 1 pressed');
 
-                servo.to(90, 500);
+                servo.cw(0.8);
+                setTimeout(function() { 
+                    servo.stop();
+                }, 400);
             };
 
             if (data == "feed-2") {
                 console.log('feed 2 pressed');
-                servo.cw(0.8);
+                servo.ccw(0.8);
                 setTimeout(function() { 
                     servo.stop();
-                }, 400)
+                }, 400);
 
             };
         });
-
-
 
 
         setInterval(function(){
