@@ -28,8 +28,16 @@ jQuery(function($){
 		$('#dayLightSlider').on('set', function(){
 			console.log('change dude!');
 			var testvalue = $('#dayLightSlider').val();
-			console.log(testvalue);
-			socket.emit('schedule', testvalue);
+
+			NewDayOn = $('#dayLightSlider').val()[0];
+			NewDayOff = $('#dayLightSlider').val()[1];
+
+			if (NewDayOn != dayLightStartTime || NewDayOff != dayLightEndTime) {
+				socket.emit('schedule', testvalue);
+			};
+			
+			// console.log(testvalue);
+			// socket.emit('schedule', testvalue);
 			 //sendSettings();
 		});
 
@@ -62,7 +70,7 @@ jQuery(function($){
 
 	socket.on('waterlevel', function(data){
         $('.waterlevel').html(data);
-        console.log(data);
+        // console.log(data);
     });
 
     socket.on('settings', function(data){

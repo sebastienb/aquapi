@@ -40,7 +40,7 @@ var motionCountdown = ""
 
 var waterlevel = ""
 var servo
-
+var socket
 
 function getCurrentTime() {
     var date = new Date();
@@ -135,13 +135,20 @@ board.on("ready", function() {
 
     function broadcastSettings(){
         
-        // socket.boradcast.emit('settings', {
+        // socket.broadcast.emit('settings', {
         //     dayLightSchedule: dayLightSchedule,
         //     dayLightState: dayLightState,
         //     nightLightState: nightLightState,
         //     dayLightStartTime: dayLightStartTime,
         //     dayLightEndTime:dayLightEndTime,
         // });
+        io.emit('settings', {
+            dayLightSchedule: dayLightSchedule,
+            dayLightState: dayLightState,
+            nightLightState: nightLightState,
+            dayLightStartTime: dayLightStartTime,
+            dayLightEndTime:dayLightEndTime,
+        });
     };
 
     setInterval(lightScheduler, 5000);
