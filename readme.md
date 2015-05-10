@@ -1,0 +1,5 @@
+- Turn on the lights for 5 hours a day
+- Turn on the night ligths at night when motion is detected for 5 minutes
+- Measure water temperature ( buzz if temp is either too hot or too cold)
+- Measure water level
+- Control lights and schedule from phone
